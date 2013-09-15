@@ -2,33 +2,43 @@
 
 class ChopTest extends PHPUnit_Framework_TestCase
 {
-    public function testCorrectElementIsFoundWithBinarySearch()
+    public function testCorrectElementIsFoundWithIterativeBinarySearch()
     {
-        $this->assertEquals(-1, search(3, []));
-        $this->assertEquals(-1, search(3, [1]));
-        $this->assertEquals(0,  search(1, [1]));
+        $this->executeAllTestsOn('iterative_search');
+    }
 
-        $this->assertEquals(0,  search(1, [1, 3, 5]));
-        $this->assertEquals(1,  search(3, [1, 3, 5]));
-        $this->assertEquals(2,  search(5, [1, 3, 5]));
-        $this->assertEquals(-1, search(0, [1, 3, 5]));
-        $this->assertEquals(-1, search(2, [1, 3, 5]));
-        $this->assertEquals(-1, search(4, [1, 3, 5]));
-        $this->assertEquals(-1, search(6, [1, 3, 5]));
+    public function testCorrectElementIsFoundWithRecursiveBinarySearch()
+    {
+        $this->executeAllTestsOn('recursive_search');
+    }
 
-        $this->assertEquals(0,  search(1, [1, 3, 5, 7]));
-        $this->assertEquals(1,  search(3, [1, 3, 5, 7]));
-        $this->assertEquals(2,  search(5, [1, 3, 5, 7]));
-        $this->assertEquals(3,  search(7, [1, 3, 5, 7]));
-        $this->assertEquals(-1, search(0, [1, 3, 5, 7]));
-        $this->assertEquals(-1, search(2, [1, 3, 5, 7]));
-        $this->assertEquals(-1, search(4, [1, 3, 5, 7]));
-        $this->assertEquals(-1, search(6, [1, 3, 5, 7]));
-        $this->assertEquals(-1, search(8, [1, 3, 5, 7]));
+    private function executeAllTestsOn($function)
+    {
+        $this->assertEquals(-1, $function(3, []));
+        $this->assertEquals(-1, $function(3, [1]));
+        $this->assertEquals(0,  $function(1, [1]));
+
+        $this->assertEquals(0,  $function(1, [1, 3, 5]));
+        $this->assertEquals(1,  $function(3, [1, 3, 5]));
+        $this->assertEquals(2,  $function(5, [1, 3, 5]));
+        $this->assertEquals(-1, $function(0, [1, 3, 5]));
+        $this->assertEquals(-1, $function(2, [1, 3, 5]));
+        $this->assertEquals(-1, $function(4, [1, 3, 5]));
+        $this->assertEquals(-1, $function(6, [1, 3, 5]));
+
+        $this->assertEquals(0,  $function(1, [1, 3, 5, 7]));
+        $this->assertEquals(1,  $function(3, [1, 3, 5, 7]));
+        $this->assertEquals(2,  $function(5, [1, 3, 5, 7]));
+        $this->assertEquals(3,  $function(7, [1, 3, 5, 7]));
+        $this->assertEquals(-1, $function(0, [1, 3, 5, 7]));
+        $this->assertEquals(-1, $function(2, [1, 3, 5, 7]));
+        $this->assertEquals(-1, $function(4, [1, 3, 5, 7]));
+        $this->assertEquals(-1, $function(6, [1, 3, 5, 7]));
+        $this->assertEquals(-1, $function(8, [1, 3, 5, 7]));
     }
 }
 
-function search($element, $list)
+function iterative_search($element, $list)
 {
     $start = 0;
     $end = count($list) - 1;
@@ -45,3 +55,24 @@ function search($element, $list)
     return -1;
 }
 
+function recursive_search($element, $list)
+{
+    $start = 0;
+    $end = count($list) - 1;
+    return recursive_loop($element, $list, $start, $end);
+}
+
+function recursive_loop($element, $list, $start, $end)
+{
+    if ($start > $end) {
+        return -1;
+    }
+    $pivot = floor(($start + $end) / 2);
+    if ($list[$pivot] == $element) {
+        return $pivot;
+    } else if ($list[$pivot] > $element) {
+        return recursive_loop($element, $list, $start, $pivot - 1);
+    } else /* if ($list[$pivot] < $element) */ {
+        return recursive_loop($element, $list, $pivot + 1, $end);
+    }
+}
